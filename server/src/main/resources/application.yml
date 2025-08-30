@@ -1,0 +1,98 @@
+server:
+  port: 8080
+
+spring:
+  ai:
+    openai:
+      base-url: https://api.deepseek.com
+      api-key: ${financial.deepseek.api-key}
+      chat.options:
+        model: ${financial.deepseek.model}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  profiles:
+    active: dev
+
+  main:
+    allow-circular-references: true
+    banner-mode: off
+
+  datasource:
+    druid:
+      driver-class-name: ${financial.datasource.driver-class-name}
+      url: jdbc:mysql://${financial.datasource.host}:${financial.datasource.port}/${financial.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${financial.datasource.username}
+      password: ${financial.datasource.password}
+
+# swagger配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  group-configs:
+    - group: 'financial'
+      paths-to-match: '/**'
+      # 生成文档所需的扫包路径，一般为启动类目录
+      packages-to-scan: org.financial.controller
+
+# knife4j配置
+knife4j:
+  # 是否启用增强设置
+  enable: true
+  # 开启生产环境屏蔽
+  production: false
+  # 是否启用登录认证
+  basic:
+    enable: false
+    # username: admin
+    # password: 123456
+  setting:
+    language: zh_cn
+    enable-version: true
+    enable-swagger-models: true
+    swagger-model-name: 用户模块
+
+mybatis:
+  # mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.financial.entity
+  configuration:
+    # 开启驼峰命名
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com:
+      tymianWeb:
+        mapper: info
+        service: info
+        controller: info
+
+web:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: riNLLTzCitYIqBOBevWsxxREDSehftTf
+    # 设置jwt过期时间(单位: ms)
+    # 2小时
+    admin-ttl: 7200000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: Authorization
+
+  github:
+    # 仓库名
+    code: ${financial.github.code}
+    # 分支名
+    branch: ${financial.github.branch}
+    # Token
+    token: ${financial.github.token}
+    # 存储路径
+    path: ${financial.github.path}
+    # 自定义域名
+    domain: ${financial.github.domain}
